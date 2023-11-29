@@ -1,6 +1,7 @@
 package utilities;
 
 import java.util.NoSuchElementException;
+import java.util.Stack;
 
 import exceptions.TreeException;
 import referenceBasedTreeImplementation.BSTreeNode;
@@ -126,53 +127,104 @@ public class BSTree<E extends Comparable<? super E>> implements BSTreeADT<E> {
     }
 
     private class InorderIterator implements Iterator<E> {
-        // Implement the inorder iterator logic
-        // ...
+        private Stack<BSTreeNode<E>> stack;
+
+        public InorderIterator() {
+            stack = new Stack<>();
+            pushInorder(root);
+        }
+
+        private void pushInorder(BSTreeNode<E> node) {
+            while (node != null) {
+                stack.push(node);
+                node = node.getLeftChild();
+            }
+        }
 
         @Override
         public boolean hasNext() {
-            // Implement hasNext method for inorder iterator
-            return false;
+            return !stack.isEmpty();
         }
 
         @Override
         public E next() throws NoSuchElementException {
-            // Implement next method for inorder iterator
-            return null;
+            if (!hasNext()) {
+                throw new NoSuchElementException("No more elements in the iteration.");
+            }
+
+            BSTreeNode<E> current = stack.pop();
+            pushInorder(current.getRightChild());
+
+            return current.getData();
         }
     }
 
     private class PreorderIterator implements Iterator<E> {
-        // Implement the preorder iterator logic
-        // ...
+        private Stack<BSTreeNode<E>> stack;
+
+        public PreorderIterator() {
+            stack = new Stack<>();
+            if (root != null) {
+                stack.push(root);
+            }
+        }
 
         @Override
         public boolean hasNext() {
-            // Implement hasNext method for preorder iterator
-            return false;
+            return !stack.isEmpty();
         }
 
         @Override
         public E next() throws NoSuchElementException {
-            // Implement next method for preorder iterator
-            return null;
+            if (!hasNext()) {
+                throw new NoSuchElementException("No more elements in the iteration.");
+            }
+
+            BSTreeNode<E> current = stack.pop();
+
+            if (current.getRightChild() != null) {
+                stack.push(current.getRightChild());
+            }
+            if (current.getLeftChild() != null) {
+                stack.push(current.getLeftChild());
+            }
+
+            return current.getData();
         }
     }
 
     private class PostorderIterator implements Iterator<E> {
-        // Implement the postorder iterator logic
-        // ...
+        private Stack<BSTreeNode<E>> stack;
+
+        public PostorderIterator() {
+            stack = new Stack<>();
+            pushPostorder(root);
+        }
+
+        private void pushPostorder(BSTreeNode<E> node) {
+            if (node == null) {
+                return;
+            }
+
+            stack.push(node);
+
+            pushPostorder(node.getRightChild());
+            pushPostorder(node.getLeftChild());
+        }
 
         @Override
         public boolean hasNext() {
-            // Implement hasNext method for postorder iterator
-            return false;
+            return !stack.isEmpty();
         }
 
         @Override
         public E next() throws NoSuchElementException {
-            // Implement next method for postorder iterator
-            return null;
+            if (!hasNext()) {
+                throw new NoSuchElementException("No more elements in the iteration.");
+            }
+
+            BSTreeNode<E> current = stack.pop();
+            return current.getData();
         }
     }
 }
