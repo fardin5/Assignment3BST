@@ -36,4 +36,7 @@ public class BSTreeNode<T extends Comparable<? super T>> implements Serializable
     public void setRightChild(BSTreeNode<T> rightChild) {
         this.rightChild = rightChild;
     }
+    
+    public void addLineInfo(String fileName, int lineNumber) {
+    }
 }

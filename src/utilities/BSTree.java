@@ -1,12 +1,13 @@
 package utilities;
 
+import java.io.*;
 import java.util.NoSuchElementException;
 import java.util.Stack;
 
 import exceptions.TreeException;
 import referenceBasedTreeImplementation.BSTreeNode;
 
-public class BSTree<E extends Comparable<? super E>> implements BSTreeADT<E> {
+public class BSTree<E extends Comparable<? super E>> implements BSTreeADT<E>, Serializable  {
     /**
 	 * 
 	 */
@@ -225,6 +226,24 @@ public class BSTree<E extends Comparable<? super E>> implements BSTreeADT<E> {
 
             BSTreeNode<E> current = stack.pop();
             return current.getData();
+        }
+    }
+    
+    public void serializeTree(String fileName) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fileName))) {
+            oos.writeObject(this);
+            System.out.println("Tree serialized and stored in " + fileName);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public static BSTree<WordNode> deserializeTree(String fileName) {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileName))) {
+            return (BSTree<WordNode>) ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 }
